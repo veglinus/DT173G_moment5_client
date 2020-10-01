@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/main.css">
+    <title>DT173G Moment 5 - REST-webbtjänster</title>
+</head>
+<body>
+    <h1>Lösning av Moment 5</h1>
+
+    <h2>Kurser jag har läst:</h2>
+    <table id="courses">
+        <thead>
+            <th>Kurskod</th>
+            <th>Kursnamn</th>
+            <th>Progression</th>
+            <th>Kursplan</th>
+            <th></th>
+        </thead>
+        <tbody id="coursesbody"></tbody>
+    </table>
+
+    <h2>Lägg till kurs</h2>
+
+    <form action="https://linush.com/arkiv/dt173gsrv/create.php" id="form">
+        <label for="code">Kurskod:</label><br>
+        <input type="text" name="code" id="code" required><br><br>
+
+        <label for="name">Kursnamn:</label><br>
+        <input type="text" name="name" id="name" required><br><br>
+    
+        <label for="progression">Progression:</label><br>
+        <input type="text" name="progression" id="progression" required><br><br>
+
+        <label for="syllabus">Kursplan:</label><br>
+        <input type="text" name="syllabus" id="syllabus" required><br><br>
+
+        <input type="submit" value="Lägg till kurs">
+    </form>
+
+    <script src="js/main.js"></script>
+</body>
+</html>
