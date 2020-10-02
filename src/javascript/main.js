@@ -1,5 +1,7 @@
 window.onload = getData(); // Onload, fyll table med data
 
+//var apiurl = "https://localhost:3000/api.php";
+
 function getData() {
     fetch('https://linush.com/arkiv/dt173gsrv/read.php', {
         method: 'POST',
@@ -26,6 +28,9 @@ function getData() {
             cell2.contentEditable = "true";
             cell3.contentEditable = "true";
 
+            cell1.className = 'kurskod';
+            cell2.className = 'kursnamn';
+            cell3.className = "progression";
             cell4.className = 'link';
             cell5.className = 'link';
 
@@ -50,11 +55,13 @@ function reload() {
     tbody.innerHTML = "";
     getData();
 }
-
+var currentelement;
 
 function trackCells() {
     const cells = document.querySelectorAll("td:not(.link)");
     cells.forEach(element => element.addEventListener("click", function() {
+
+        currentelement = element.innerHTML;
         //console.log(this.innerHTML);
         /*
         if (this.contentEditable !== 'true') {
@@ -69,16 +76,14 @@ function trackOff() {
     cells.forEach(element => element.addEventListener("blur", function() {
         console.log(this.innerHTML + " has been blurred");
 
+        if (currentelement !== this.innerHTML) {
+            var what = element.className; // Klassnamn är vilken typ av kolumn det är
+            var parent = element.parentElement; // Hittar parent av elementet klickat på
+            var index = parent.firstChild.innerHTML; // Hittar första elementet av parent, alltså kurskoden som är index
+    
+            updateOne(index, what, this.innerHTML);
+        }
         
-
-        var parent = element.parentElement; // Hittar parent av elementet klickat på
-        var index = parent.firstChild.innerHTML; // Hittar första elementet av parent, alltså kurskoden som är index
-        console.log(index);
-
-        
-
-        //updateOne('index', 'what', this.innerHTML);
-
     }));
 }
 
@@ -93,13 +98,17 @@ function updateOne(index, what, newdata) {
     fetch('https://linush.com/arkiv/dt173gsrv/updateone.php', {
         method: 'PUT',
         mode: 'cors',
+        headers: {
+            'Content-Type': 'application/json'
+            // 'Content-Type': 'application/x-www-form-urlencoded',
+          },
         body: JSON.stringify(senddata)
     })
     .then(status)
     //.then(response => response.json())
     .then(response => {
         console.log(response);
-        reload();
+        //reload();
 
     }).catch(function(error) {
         console.log('Error: ' + error);
