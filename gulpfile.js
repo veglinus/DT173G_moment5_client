@@ -16,7 +16,7 @@ const files = {
     css: "src/**/*.css",
     sass: "src/sass/*.scss",
     js: "src/**/*.js",
-    imgs: "src/assets/*",
+    //imgs: "src/assets/*",
     assets: "src/assets/*"
 }
 
@@ -57,6 +57,8 @@ function minifyCSS() {
 }*/
 
 // Minifiera bilder, sänker kvalitén på dem
+
+/*
 function minifyIMGS() {
     return src(files.imgs)
     .pipe(imagemin([
@@ -65,7 +67,7 @@ function minifyIMGS() {
     ]))
     .pipe(dest('pub'))
     .pipe(browserSync.stream())
-}
+}*/
 
 // Tar bort pub mappen
 function clean() {
@@ -91,7 +93,7 @@ function watchTask() {
         }
     });
 
-    watch([files.imgs], minifyIMGS);
+    //watch([files.imgs], minifyIMGS);
     watch([files.html], copyhtml);
     watch([files.js], minifyJS);
     //watch([files.css], minifyCSS);
@@ -101,7 +103,7 @@ function watchTask() {
 // Default task
 exports.default = series(
     clean,
-    parallel(copyhtml, minifyJS, minifyIMGS, sassTask, copyAssets),
+    parallel(copyhtml, minifyJS, sassTask, copyAssets),
     watchTask
 )
 
@@ -110,5 +112,5 @@ exports.sassTask = sassTask;
 exports.copyhtml = copyhtml;
 exports.minifyJS = minifyJS;
 //exports.minifyCSS = minifyCSS;
-exports.minifyIMGS = minifyIMGS;
+//exports.minifyIMGS = minifyIMGS;
 exports.copyAssets = copyAssets;

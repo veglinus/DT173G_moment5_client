@@ -1,10 +1,9 @@
+const url = "https://linush.com/arkiv/dt173g/moment5_server/api.php";
 window.onload = getData(); // Onload, fyll table med data
 
-//var apiurl = "https://localhost:3000/api.php";
-
 function getData() {
-    fetch('https://linush.com/arkiv/dt173gsrv/read.php', {
-        method: 'POST',
+    fetch(url, {
+        method: 'GET',
         mode: 'cors'
     })
     .then(status) // Kolla om status är okej
@@ -43,8 +42,8 @@ function getData() {
     }
     ).then(function() {
         trackCells();
-        trackOff();
-    } // Tracka om celler redigeras nu efter att de har skapats
+        trackOff(); // Tracka om celler redigeras nu efter att de har skapats
+    } 
     ).catch(function(error) {
         console.log('Error: ' + error);
     });;
@@ -55,35 +54,28 @@ function reload() {
     tbody.innerHTML = "";
     getData();
 }
+
 var currentelement;
 
 function trackCells() {
     const cells = document.querySelectorAll("td:not(.link)");
     cells.forEach(element => element.addEventListener("click", function() {
-
         currentelement = element.innerHTML;
-        //console.log(this.innerHTML);
-        /*
-        if (this.contentEditable !== 'true') {
-            console.log('set editable to true');
-            this.contentEditable = "true";
-        }*/
     }));
 }
 
-function trackOff() {
+function trackOff() { // Trackar om en cell förlorat fokus
     var cells = document.querySelectorAll("td:not(.link)");
     cells.forEach(element => element.addEventListener("blur", function() {
         console.log(this.innerHTML + " has been blurred");
 
-        if (currentelement !== this.innerHTML) {
+        if (currentelement !== this.innerHTML) { // Om innehållet har ändrats: Uppdatera DB
             var what = element.className; // Klassnamn är vilken typ av kolumn det är
             var parent = element.parentElement; // Hittar parent av elementet klickat på
             var index = parent.firstChild.innerHTML; // Hittar första elementet av parent, alltså kurskoden som är index
     
             updateOne(index, what, this.innerHTML);
         }
-        
     }));
 }
 
@@ -95,20 +87,17 @@ function updateOne(index, what, newdata) {
         'newvalue': newdata // det nya värdet
     }
 
-    fetch('https://linush.com/arkiv/dt173gsrv/updateone.php', {
+    fetch(url, {
         method: 'PUT',
         mode: 'cors',
         headers: {
             'Content-Type': 'application/json'
-            // 'Content-Type': 'application/x-www-form-urlencoded',
           },
         body: JSON.stringify(senddata)
     })
     .then(status)
-    //.then(response => response.json())
     .then(response => {
-        console.log(response);
-        //reload();
+        console.log('Updated in DB!');
 
     }).catch(function(error) {
         console.log('Error: ' + error);
@@ -123,18 +112,15 @@ function deleteCourse(data) {
     var res = confirm("Är du säker på att du vill ta bort kursen?");
 
     if (res === true) {
-        fetch('https://linush.com/arkiv/dt173gsrv/delete.php', {
+        fetch(url, {
             method: 'DELETE',
             mode: 'cors',
             body: JSON.stringify(senddata)
         })
         .then(status)
-        .then(response => response.json())
         .then(response => {
-            
-            alert(response);
+            //console.log(response);
             reload();
-    
         }).catch(function(error) {
             console.log('Error: ' + error);
         });
@@ -150,35 +136,33 @@ myForm.addEventListener('submit', (event) => {
 function addCourse() {
     const form = new FormData(myForm);
 
-    fetch('https://linush.com/arkiv/dt173gsrv/create.php', {
+    fetch(url, {
         method: 'POST',
         mode: 'cors',
         body: form
     })
     .then(status)
-    .then(response => response.json())
     .then(response => {
+        //console.log(response);
         
-        if (response === "Kurs tillagd!") {
-            // empty fields
-            alert(response);
-            update();
+        if (response.ok === true) {
+            reload();
+            myForm.reset();
         } else {
             alert(response);
         }
-        
-        // Reload or delete row
 
     }).catch(function(error) {
         console.log('Error: ' + error);
+        reload();
     });
 
 }
 
 
-// https://developers.google.com/web/updates/2015/03/introduction-to-fetch
+// Tagen från https://developers.google.com/web/updates/2015/03/introduction-to-fetch
 function status(response) {
-    console.log(response.status);
+    //console.log(response.status);
     if (response.status >= 200 && response.status < 300) {
       return Promise.resolve(response)
     } else {

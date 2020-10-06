@@ -1,7 +1,41 @@
 
+// https://css-tricks.com/snippets/sass/sass-things-links/
+$a-tags: 'a, a:active, a:hover, a:visited';
+$a-tags-hover: 'a:active, a:hover';
 
+$primary: #f542b0;
+
+body {
+    h1, h2 {
+        font-family: Verdana, Geneva, sans-serif;
+        font-weight: 500;
+    } 
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
 
 table {
+    border-collapse: collapse;
+    
+    th, td {
+        text-align: left;
+        padding: 5px 10px;
+        border-bottom: 1px solid #CCC;
+    }
+    td {
+        #{$a-tags} { // https://css-tricks.com/snippets/sass/sass-things-links/
+            color: darken($primary, 20%);
+        }
+        #{$a-tags-hover} {
+            color: $primary;
+        }
+    }
+    tr:hover {
+        background-color: #EEE;
+    }
+    .progression, .link {
+        text-align: center;
+    }
+
     a {
         img {
             width: 32px;
@@ -9,3 +43,19 @@ table {
         }
     }
 }
+
+form {
+    label {
+        font-weight: bold;
+    }
+    input[type=submit] {
+        background-color: darken($primary, 20%);
+        color: white;
+        text-decoration: none;
+        border: none;
+        border-radius: 6px;
+        
+        padding: 12px 20px;
+    }
+}
+
